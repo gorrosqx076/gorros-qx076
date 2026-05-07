@@ -497,9 +497,15 @@
         let COSTO_ARMADO = 150; // Lo cambiamos a 'let' para que pueda variar
 
         // Escuchar el costo dinámico desde Firebase
+        // Escuchar el costo dinámico desde Firebase
         db.ref('Configuracion/CostoArmado').on('value', (snapshot) => {
             if(snapshot.exists()) {
                 COSTO_ARMADO = parseFloat(snapshot.val());
+                
+                // ¡AQUÍ ESTÁ LA MAGIA QUE FALTABA! Actualiza el textito de "Costo de Armado"
+                document.querySelectorAll('.label-costo-armado').forEach(elemento => {
+                    elemento.innerText = `$${COSTO_ARMADO}`;
+                });
                 
                 // Actualizamos la interfaz de inmediato por si cambiaste el precio mientras el cliente navega
                 const tDesktop = document.getElementById('total-ramo-desktop');
