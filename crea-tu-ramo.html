@@ -495,7 +495,25 @@
 
         let gorrosSeleccionados = [];
         let papelSeleccionado = "Negro Elegante";
-        const COSTO_ARMADO = 150;
+        let COSTO_ARMADO = 150; // Lo cambiamos a 'let' para que pueda variar
+
+        // Escuchar el costo dinámico desde Firebase
+        db.ref('Configuracion/CostoArmado').on('value', (snapshot) => {
+            if(snapshot.exists()) {
+                COSTO_ARMADO = parseFloat(snapshot.val());
+                
+                // Actualizamos la interfaz de inmediato por si cambiaste el precio mientras el cliente navega
+                const tDesktop = document.getElementById('total-ramo-desktop');
+                const tMobile = document.getElementById('total-ramo-mobile');
+                
+                if (typeof gorrosSeleccionados !== 'undefined' && gorrosSeleccionados.length === 0) {
+                    if(tDesktop) tDesktop.innerText = `$${COSTO_ARMADO}`;
+                    if(tMobile) tMobile.innerText = `$${COSTO_ARMADO}`;
+                } else if (typeof actualizarInterfaz === "function") {
+                    actualizarInterfaz();
+                }
+            }
+        });
         let cacheProductosRamo = {};
 
         // Inicializamos los precios de golpe al cargar
